@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext} from 'react';
-import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, TextInput, Button, Alert } from "react-native";
+import React, { useState, useEffect, useContext } from 'react';
+import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, TextInput, Alert } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { BottomSheet } from 'react-native-btr';
 import DatePicker from 'react-native-date-picker';
@@ -12,7 +12,7 @@ function AddBudget() {
     const [date, setDate] = useState(new Date());
     const [open, setOpen] = useState(false);
     const [budgetInfo, setBudgetInfo] = useState(null);
-    const {user, setUser} = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
 
     const [visible, setVisible] = useState(false);
     const toggleBottomNavigationView = () => {
@@ -35,16 +35,15 @@ function AddBudget() {
         getCurrentUser();
     }, []);
 
-    const getUserSpecificBudgetInfo = async() => {
+    const getUserSpecificBudgetInfo = async () => {
         const budgetList = await firestore()
-        .collection('budgets')
-        .where("userEmail", "==", user.email)
-        .get().then(querySnapshot =>{
-            //console.log('all budget Info: ', querySnapshot, " ", querySnapshot.size);
-            querySnapshot.forEach(documentSnapshot => {
-                //console.log('Budget Key: ', documentSnapshot.id, " Data: ", documentSnapshot.data());
+            .collection('budgets')
+            .where("userEmail", "==", user.email)
+            .get().then(querySnapshot => {
+                //console.log('all budget Info: ', querySnapshot, " ", querySnapshot.size);
+                querySnapshot.forEach(documentSnapshot => {
+                });
             });
-        });
     };
 
     useEffect(() => {
@@ -52,20 +51,20 @@ function AddBudget() {
 
     }, []);
 
-    const createBudget = async() => {
+    const createBudget = async () => {
         firestore()
-        .collection('budgets')
-        .add({
-            bName: budgetInfo.bName,
-            allocatedAmount: budgetInfo.budgetAmount,
-            //currency: budgetInfo.currency,
-            userEmail: user.email,
-            //budgetStartDate: budgetInfo.date,
-            //budgetEndDate: 
-            createdAt: firestore.Timestamp.fromDate(new Date()),
-        }).then(() => {
-            Alert.alert('Budget Allocated Successfully..')
-        })
+            .collection('budgets')
+            .add({
+                bName: budgetInfo.bName,
+                allocatedAmount: budgetInfo.budgetAmount,
+                //currency: budgetInfo.currency,
+                userEmail: user.email,
+                //budgetStartDate: budgetInfo.date,
+                //budgetEndDate: 
+                createdAt: firestore.Timestamp.fromDate(new Date()),
+            }).then(() => {
+                Alert.alert('Add Budget Details successfully.')
+            })
     };
 
     const closeCreateBudgetBottomSheet = () => {
@@ -83,7 +82,7 @@ function AddBudget() {
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }, styles.userBtnWrapper}>
                         <TouchableOpacity style={styles.userBtn}
                             onPress={toggleBottomNavigationView}
-                            >
+                        >
                             <BottomSheet
                                 visible={visible}
                                 onBackButtonPress={toggleBottomNavigationView}
@@ -102,8 +101,8 @@ function AddBudget() {
                                             placeholderTextColor='#666666'
                                             style={styles.textInput}
                                             value={budgetInfo ? budgetInfo.bName : ''}
-                                            onChangeText={(txt) => setBudgetInfo({...budgetInfo, bName: txt})}
-                                            //autoCorrect={false}
+                                            onChangeText={(txt) => setBudgetInfo({ ...budgetInfo, bName: txt })}
+                                        //autoCorrect={false}
                                         />
                                     </View>
                                     <View style={styles.action}>
@@ -114,7 +113,7 @@ function AddBudget() {
                                             style={styles.textInput}
                                             keyboardType="number-pad"
                                             value={budgetInfo ? budgetInfo.budgetAmount : ''}
-                                            onChangeText={(txt) => setBudgetInfo({...budgetInfo, budgetAmount: txt})}
+                                            onChangeText={(txt) => setBudgetInfo({ ...budgetInfo, budgetAmount: txt })}
                                         />
                                     </View>
                                     <View style={styles.action}>
@@ -123,7 +122,7 @@ function AddBudget() {
                                             placeholder='Currency'
                                             placeholderTextColor='#666666'
                                             style={styles.textInput}
-                                            //value={date ? moment(date).format('YYYY-MM-DD') : ''}
+                                        //value={date ? moment(date).format('YYYY-MM-DD') : ''}
                                         //onChangeText={(txt) => setUserData({ ...userData, lname: txt })}
                                         //autoCorrect={false}
                                         />
@@ -142,7 +141,7 @@ function AddBudget() {
                                                 onConfirm={(date) => {
                                                     setOpen(false)
                                                     setDate(moment(date).format('YYYY-MM-DD'))
-                                                    setBudgetInfo({...budgetInfo, budgetStartDate: txt})
+                                                    setBudgetInfo({ ...budgetInfo, budgetStartDate: txt })
                                                     console.log(date);
                                                     console.log('start date', budgetInfo.budgetStartDate ? budgetInfo.budgetStartDate : 'nothing')
                                                 }}
@@ -178,8 +177,8 @@ function AddBudget() {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.pageContainer}>
-                    
-                </View>
+
+                    </View>
                 </View>
             </ImageBackground>
         </View>

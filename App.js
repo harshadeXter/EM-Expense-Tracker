@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Modal } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -13,6 +13,8 @@ import { AuthContext, AuthProvider } from './navigation/AuthProvider';
 import AuthStack from './navigation/AuthStack';
 import AddBudget from './screens/AddBudget';
 import AddExpenseItem from './screens/AddExpenseItem';
+import { NetworkProvider, NetworkConsumer } from 'react-native-offline';
+import FormAlert from './components/FormAlert';
 
 function HomeScreen({ navigation }) {
   const { user, logout } = useContext(AuthContext);
@@ -54,7 +56,7 @@ function TabNavigation() {
             iconName = focused ? 'person-circle-outline' : 'person-outline';
           } else if (route.name === 'Budgets') {
             iconName = focused ? 'logo-usd' : 'logo-bitcoin';
-          }else if (route.name === 'Expenses') {
+          } else if (route.name === 'Expenses') {
             iconName = focused ? 'pricetags-outline' : 'pricetags';
           }
 
@@ -68,7 +70,7 @@ function TabNavigation() {
       {/* <Tab.Screen name="Login" component={LoginScreen} /> */}
       <Tab.Screen name="Profile" component={ProfileScreen} />
       {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
-      <Tab.Screen name="Expenses" component={AddExpenseItem} options={{ tabBarBadge: 3 }}/>
+      <Tab.Screen name="Expenses" component={AddExpenseItem} options={{ tabBarBadge: 3 }} />
       <Tab.Screen name="Budgets" component={AddBudget} />
       <Tab.Screen name="Update Profile" component={EditProfileScreen} />
     </Tab.Navigator>
@@ -107,7 +109,26 @@ const Providers = () => {
 }
 
 function App() {
-  return <Providers />;
+  //const [showCustomSuccessAlertBox, setShowCustomSuccessAlertBox] = useState(false);
+  //setShowCustomSuccessAlertBox(true);
+  return (
+    <NetworkProvider shouldPing={true} pingInterval={100}>
+      <NetworkConsumer>
+        {({ isConnected }) =>
+          isConnected ? (
+            <Providers />
+          ) : (
+            <FormAlert
+              displayMode={'failed'}
+              displayContent={'Please Enable Mobile Internet'}
+              visibility={true}
+              dismissAlert={true}
+            />
+          )
+        }
+      </NetworkConsumer>
+    </NetworkProvider>
+  );
 }
 
 export default App;

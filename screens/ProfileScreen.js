@@ -5,8 +5,6 @@ import firestore from '@react-native-firebase/firestore';
 
 
 function ProfileScreen({ navigation }) {
-
-    console.log('nav: ', navigation.navigate);
     const { user, logout } = useContext(AuthContext);
     const [image, setImage] = useState(null);
     const [userData, setUserData] = useState(null);
