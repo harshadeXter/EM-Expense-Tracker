@@ -120,7 +120,7 @@ function App() {
           ) : (
             <FormAlert
               displayMode={'failed'}
-              displayContent={'Please Enable Mobile Internet'}
+              displayContent={'Check your Internet Connectivity!!'}
               visibility={true}
               dismissAlert={true}
             />

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, TextInput, Alert } from "react-native";
+import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, FlatList } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { BottomSheet } from 'react-native-btr';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../navigation/AuthProvider';
+import { CustomListView } from '../components/CustomListView';
 
 
 function AddBudget() {
@@ -36,19 +37,21 @@ function AddBudget() {
     }, []);
 
     const getUserSpecificBudgetInfo = async () => {
+        const budgetArr = [];
         const budgetList = await firestore()
             .collection('budgets')
             .where("userEmail", "==", user.email)
             .get().then(querySnapshot => {
                 //console.log('all budget Info: ', querySnapshot, " ", querySnapshot.size);
                 querySnapshot.forEach(documentSnapshot => {
+                    budgetArr.push(documentSnapshot.data())
                 });
             });
+        setBudgetInfo(budgetArr);
     };
 
     useEffect(() => {
         getUserSpecificBudgetInfo();
-
     }, []);
 
     const createBudget = async () => {
@@ -57,10 +60,7 @@ function AddBudget() {
             .add({
                 bName: budgetInfo.bName,
                 allocatedAmount: budgetInfo.budgetAmount,
-                //currency: budgetInfo.currency,
                 userEmail: user.email,
-                //budgetStartDate: budgetInfo.date,
-                //budgetEndDate: 
                 createdAt: firestore.Timestamp.fromDate(new Date()),
             }).then(() => {
                 Alert.alert('Add Budget Details successfully.')
@@ -74,15 +74,14 @@ function AddBudget() {
 
     return (
         <View style={styles.container}>
-            <ImageBackground
-                source={require('../assets/lightGreen.jpg')}
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
                 style={styles.backgroundImage}>
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-                    style={styles.backgroundImage}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }, styles.userBtnWrapper}>
-                        <TouchableOpacity style={styles.userBtn}
-                            onPress={toggleBottomNavigationView}
-                        >
+                <View
+                    style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }, styles.userBtnWrapper}>
+                    <TouchableOpacity style={styles.userBtn}
+                        onPress={toggleBottomNavigationView}
+                    >
+                        <KeyboardAvoidingView behavior="height">
                             <BottomSheet
                                 visible={visible}
                                 onBackButtonPress={toggleBottomNavigationView}
@@ -102,7 +101,6 @@ function AddBudget() {
                                             style={styles.textInput}
                                             value={budgetInfo ? budgetInfo.bName : ''}
                                             onChangeText={(txt) => setBudgetInfo({ ...budgetInfo, bName: txt })}
-                                        //autoCorrect={false}
                                         />
                                     </View>
                                     <View style={styles.action}>
@@ -114,17 +112,6 @@ function AddBudget() {
                                             keyboardType="number-pad"
                                             value={budgetInfo ? budgetInfo.budgetAmount : ''}
                                             onChangeText={(txt) => setBudgetInfo({ ...budgetInfo, budgetAmount: txt })}
-                                        />
-                                    </View>
-                                    <View style={styles.action}>
-                                        <FontAwesome name="gg" size={20} />
-                                        <TextInput
-                                            placeholder='Currency'
-                                            placeholderTextColor='#666666'
-                                            style={styles.textInput}
-                                        //value={date ? moment(date).format('YYYY-MM-DD') : ''}
-                                        //onChangeText={(txt) => setUserData({ ...userData, lname: txt })}
-                                        //autoCorrect={false}
                                         />
                                     </View>
                                     <View style={styles.action}>
@@ -173,14 +160,17 @@ function AddBudget() {
                                     </TouchableOpacity>
                                 </View>
                             </BottomSheet>
-                            <Text style={styles.userBtnTxt}>Create Your Budget</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.pageContainer}>
-
+                        </KeyboardAvoidingView>
+                        <Text style={styles.userBtnTxt}>Create Your Budget</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.pageContainer}>
+                    <View style={styles.container}>
+                        <CustomListView
+                            itemList={budgetInfo} />
                     </View>
                 </View>
-            </ImageBackground>
+            </View>
         </View>
     );
 }
@@ -188,6 +178,7 @@ function AddBudget() {
 var styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FCFCFC',
     },
     backgroundImage: {
         flex: 1,
@@ -214,7 +205,7 @@ var styles = StyleSheet.create({
     },
     panel: {
         padding: 20,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FCFCFC',
         paddingTop: 20,
     },
     panelHeader: {
@@ -245,7 +236,7 @@ var styles = StyleSheet.create({
         marginVertical: 7,
     },
     panelButtonTitle: {
-        fontSize: 17,
+        fontSize: 20,
         fontWeight: 'bold',
         color: 'white',
     },
@@ -271,17 +262,14 @@ var styles = StyleSheet.create({
         color: '#05375a',
     },
     pageContainer: {
-        backgroundColor: '#fff',
+        backgroundColor: '#FCFCFC',
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         padding: 20,
     },
     pageText: {
         fontSize: 20,
         color: '#333333',
     },
-    cardView: {}
 });
 
 export default AddBudget;

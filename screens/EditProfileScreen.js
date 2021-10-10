@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, TextInput, Alert, KeyboardAvoidingView } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { BottomSheet } from 'react-native-btr';
@@ -127,123 +127,125 @@ function EditProfileScreen({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }, styles.container}>
             <View style={{ margin: 20 }}>
-                <View style={{ alignItems: 'center' }}>
-                    <TouchableOpacity onPress={toggleBottomNavigationView}>
-                        <BottomSheet
-                            visible={visible}
-                            onBackButtonPress={toggleBottomNavigationView}
-                            onBackdropPress={toggleBottomNavigationView}
-                        >
-                            <View style={styles.panel}>
-                                <View style={{ alignItems: 'center' }}>
-                                    <Text style={styles.panelTitle}>Upload Photo</Text>
-                                    <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
-                                </View>
-                                <TouchableOpacity
-                                    style={styles.panelButton}
-                                    onPress={takePhotoFromCamera}
-                                >
-                                    <Text style={styles.panelButtonTitle}>Take Photo</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.panelButton}
-                                    onPress={chooseFromGallery}
-                                >
-                                    <Text style={styles.panelButtonTitle}>Choose From Library</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.panelButton}
-                                    onPress={toggleBottomNavigationView}
-                                >
-                                    <Text style={styles.panelButtonTitle}>Cancel</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </BottomSheet>
-
-                        <View style={{
-                            height: 100,
-                            width: 100,
-                            borderRadius: 15,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <ImageBackground
-                                source={{
-                                    uri: image
-                                        ? image
-                                        : userData
-                                            ? userData.userImg ||
-                                            'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
-                                            : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
-                                }}
-                                style={{ height: 100, width: 100 }}
-                                imageStyle={{ borderRadius: 15 }}
+                <KeyboardAvoidingView behavior="padding">
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity onPress={toggleBottomNavigationView}>
+                            <BottomSheet
+                                visible={visible}
+                                onBackButtonPress={toggleBottomNavigationView}
+                                onBackdropPress={toggleBottomNavigationView}
                             >
-                                <View style={{
-                                    flex: 1,
-                                    justifyContent: 'center',
-                                    alignItems: 'center'
-                                }}>
-                                    <Icon name="camera" size={25} color="#000000"
-                                        style={{
-                                            opacity: 0.6,
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            borderWidth: 0,
-                                            borderColor: "#000000",
-                                            borderRadius: 10,
-                                        }} />
+                                <View style={styles.panel}>
+                                    <View style={{ alignItems: 'center' }}>
+                                        <Text style={styles.panelTitle}>Upload Photo</Text>
+                                        <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
+                                    </View>
+                                    <TouchableOpacity
+                                        style={styles.panelButton}
+                                        onPress={takePhotoFromCamera}
+                                    >
+                                        <Text style={styles.panelButtonTitle}>Take Photo</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.panelButton}
+                                        onPress={chooseFromGallery}
+                                    >
+                                        <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.panelButton}
+                                        onPress={toggleBottomNavigationView}
+                                    >
+                                        <Text style={styles.panelButtonTitle}>Cancel</Text>
+                                    </TouchableOpacity>
                                 </View>
-                            </ImageBackground>
+                            </BottomSheet>
+
+                            <View style={{
+                                height: 100,
+                                width: 100,
+                                borderRadius: 15,
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                                <ImageBackground
+                                    source={{
+                                        uri: image
+                                            ? image
+                                            : userData
+                                                ? userData.userImg ||
+                                                'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
+                                                : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
+                                    }}
+                                    style={{ height: 100, width: 100 }}
+                                    imageStyle={{ borderRadius: 15 }}
+                                >
+                                    <View style={{
+                                        flex: 1,
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+                                    }}>
+                                        <Icon name="camera" size={25} color="#000000"
+                                            style={{
+                                                opacity: 0.6,
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                borderWidth: 0,
+                                                borderColor: "#000000",
+                                                borderRadius: 10,
+                                            }} />
+                                    </View>
+                                </ImageBackground>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={styles.action}>
+                            <FontAwesome name="user-o" size={20} />
+                            <TextInput
+                                placeholder='First Name'
+                                placeholderTextColor='#666666'
+                                style={styles.textInput}
+                                value={userData ? userData.fname : ''}
+                                onChangeText={(txt) => setUserData({ ...userData, fname: txt })}
+                                autoCorrect={false}
+                            />
                         </View>
-                    </TouchableOpacity>
-                    <View style={styles.action}>
-                        <FontAwesome name="user-o" size={20} />
-                        <TextInput
-                            placeholder='First Name'
-                            placeholderTextColor='#666666'
-                            style={styles.textInput}
-                            value={userData ? userData.fname : ''}
-                            onChangeText={(txt) => setUserData({ ...userData, fname: txt })}
-                            autoCorrect={false}
-                        />
+                        <View style={styles.action}>
+                            <FontAwesome name="user-o" size={20} />
+                            <TextInput
+                                placeholder='Last Name'
+                                placeholderTextColor='#666666'
+                                style={styles.textInput}
+                                value={userData ? userData.lname : ''}
+                                onChangeText={(txt) => setUserData({ ...userData, lname: txt })}
+                                autoCorrect={false}
+                            />
+                        </View>
+                        <View style={styles.action}>
+                            <FontAwesome name="phone" size={20} />
+                            <TextInput
+                                placeholder='Mobile'
+                                placeholderTextColor='#666666'
+                                keyboardType="number-pad"
+                                style={styles.textInput}
+                                value={userData ? userData.phone : ''}
+                                onChangeText={(txt) => setUserData({ ...userData, phone: txt })}
+                                autoCorrect={false}
+                            />
+                        </View>
+                        <View style={styles.action}>
+                            <FontAwesome name="envelope-o" size={20} />
+                            <TextInput
+                                placeholder='Email'
+                                placeholderTextColor='#666666'
+                                keyboardType="email-address"
+                                style={styles.textInput}
+                                value={userData ? userData.email : ''}
+                                editable={false}
+                                autoCorrect={false}
+                            />
+                        </View>
                     </View>
-                    <View style={styles.action}>
-                        <FontAwesome name="user-o" size={20} />
-                        <TextInput
-                            placeholder='Last Name'
-                            placeholderTextColor='#666666'
-                            style={styles.textInput}
-                            value={userData ? userData.lname : ''}
-                            onChangeText={(txt) => setUserData({ ...userData, lname: txt })}
-                            autoCorrect={false}
-                        />
-                    </View>
-                    <View style={styles.action}>
-                        <FontAwesome name="phone" size={20} />
-                        <TextInput
-                            placeholder='Mobile'
-                            placeholderTextColor='#666666'
-                            keyboardType="number-pad"
-                            style={styles.textInput}
-                            value={userData ? userData.phone : ''}
-                            onChangeText={(txt) => setUserData({ ...userData, phone: txt })}
-                            autoCorrect={false}
-                        />
-                    </View>
-                    <View style={styles.action}>
-                        <FontAwesome name="envelope-o" size={20} />
-                        <TextInput
-                            placeholder='Email'
-                            placeholderTextColor='#666666'
-                            keyboardType="email-address"
-                            style={styles.textInput}
-                            value={userData ? userData.email : ''}
-                            editable={false}
-                            autoCorrect={false}
-                        />
-                    </View>
-                </View>
+                </KeyboardAvoidingView>
                 <TouchableOpacity style={styles.commandButton}
                     onPress={handleUpdate}>
                     <Text style={styles.panelButtonTitle}>Update</Text>

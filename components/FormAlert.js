@@ -4,7 +4,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const FormAlert = ({ displayMode, displayContent, visibility, dismissAlert }) => {
-    console.log('Inside', displayMode, displayContent, visibility, dismissAlert);
     return (
         <View>
             <Modal
