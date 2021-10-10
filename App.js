@@ -15,6 +15,7 @@ import AddBudget from './screens/AddBudget';
 import AddExpenseItem from './screens/AddExpenseItem';
 import { NetworkProvider, NetworkConsumer } from 'react-native-offline';
 import FormAlert from './components/FormAlert';
+import { StackNav } from './navigation/StackNav';
 
 function HomeScreen({ navigation }) {
   const { user, logout } = useContext(AuthContext);
@@ -35,7 +36,6 @@ function test() {
   );
 };
 
-const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function TabNavigation() {
@@ -67,12 +67,10 @@ function TabNavigation() {
         tabBarHideOnKeyboard: true
       })}
     >
-      {/* <Tab.Screen name="Login" component={LoginScreen} /> */}
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-      {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
+      <Tab.Screen name="Profile" component={StackNav} />
       <Tab.Screen name="Expenses" component={AddExpenseItem} options={{ tabBarBadge: 3 }} />
       <Tab.Screen name="Budgets" component={AddBudget} />
-      <Tab.Screen name="Update Profile" component={EditProfileScreen} />
+      {/* <Tab.Screen name="Update Profile" component={EditProfileScreen} /> */}
     </Tab.Navigator>
   );
 }

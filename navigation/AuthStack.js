@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignupScreen from '../screens/SignUpScreen';
 import LoginScreen from '../screens/LoginScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const Stack = createNativeStackNavigator();
@@ -38,6 +39,7 @@ function AuthStack() {
                     ),
                 })}
             />
+            <Stack.Screen name={'EditProfile'} component={EditProfileScreen} />
         </Stack.Navigator>
     );
 }

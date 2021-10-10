@@ -48,9 +48,10 @@ function ProfileScreen({ navigation }) {
                     }}>
                     </View>
                 </ImageBackground>
-                <Text style={styles.userName}>{userData? userData.email: ''}</Text>
+                <Text style={styles.userName}>{userData ? userData.email : ''}</Text>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }, styles.userBtnWrapper}>
-                    <TouchableOpacity style={styles.userBtn} onPress={() => { }}>
+                    <TouchableOpacity style={styles.userBtn}
+                        onPress={() => navigation.navigate('EditProfileScreen')}>
                         <Text style={styles.userBtnTxt}>Edit Profile</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.userBtn}
