@@ -1,43 +1,94 @@
-import React, { useState } from 'react';
-import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, TextInput, Select } from "react-native";
+import React, { useState, useContext, useEffect } from 'react';
+import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, TextInput, Select, Alert } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { BottomSheet } from 'react-native-btr';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { AuthContext } from '../navigation/AuthProvider';
+import firestore from '@react-native-firebase/firestore';
+import ExpenseListView from '../components/ExpenseListView';
+
 
 
 function AddExpenseItem() {
+    const { user, setUser } = useContext(AuthContext);
     const [visible, setVisible] = useState(false);
+    const [expense, setExpense] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
     const toggleBottomNavigationView = () => {
         setVisible(!visible);
     };
 
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-        { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' }
-    ]);
+    const getCurrentUser = async () => {
+        const currentUser = await firestore()
+            .collection('users')
+            .doc(user.uid)
+            .get()
+            .then((documentSnapshot) => {
+                if (documentSnapshot.exists) {
+                    setUser(documentSnapshot.data());
+                }
+            })
+    };
+
+    const createExpenseDetails = async () => {
+        console.log('expense: ', expense);
+        console.log('email', user.email);
+        firestore()
+            .collection('expenses')
+            .add({
+                expenseNote: expense.expenseNote,
+                expenseAmount: expense.expenseAmount,
+                userEmail: user.email,
+                createdAt: firestore.Timestamp.fromDate(new Date())
+            }).then(() => {
+                Alert.alert('Expense Saved Successfully')
+            })
+    };
+
+    const getUserSpecificExpenses = async() => {
+        const expenseArr = [];
+        const expenseList = await firestore()
+            .collection('expenses')
+            .where("userEmail", "==", user.email)
+            .get().then(querySnapshot => {
+                querySnapshot.forEach(documentSnapshot => {
+                    expenseArr.push(documentSnapshot.data())
+                });
+            });
+        setExpense(expenseArr);
+    };
+
+    useEffect(() => {
+        getUserSpecificExpenses();
+    }, []);
+
+    const closeAddExpenseBottomSheet = () => {
+        createExpenseDetails();
+        toggleBottomNavigationView();
+    }
+
+    useEffect(() => {
+        getCurrentUser();
+    }, []);
 
     return (
-        <ImageBackground
-            source={require('../assets/backImage.jpg')}
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
             style={styles.backgroundImage}>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-                style={styles.backgroundImage}>
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }, styles.userBtnWrapper}>
-                    <TouchableOpacity style={styles.userBtn}
-                        onPress={toggleBottomNavigationView}>
-                        <BottomSheet
-                            visible={visible}
-                            onBackButtonPress={toggleBottomNavigationView}
-                            onBackdropPress={toggleBottomNavigationView}
-                        >
-                            <View style={styles.panel}>
-                                <View style={{ alignItems: 'center' }}>
-                                    <Text style={styles.panelTitle}>Add a Transaction</Text>
-                                </View>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }, styles.userBtnWrapper}>
+                <TouchableOpacity style={styles.userBtn}
+                    onPress={toggleBottomNavigationView}>
+                    <BottomSheet
+                        visible={visible}
+                        onBackButtonPress={toggleBottomNavigationView}
+                        onBackdropPress={toggleBottomNavigationView}
+                    >
+                        <View style={styles.panel}>
+                            <View style={{ alignItems: 'center' }}>
+                                <Text style={styles.panelTitle}>Add a Transaction</Text>
+                            </View>
 
-                                <View style={styles.action}>
+                            {/* <View style={styles.action}>
                                     <DropDownPicker
                                         placeholder="Transaction Category"
                                         containerStyle={{ height: 40, marginTop: 10 }}
@@ -52,54 +103,58 @@ function AddExpenseItem() {
                                         setValue={setValue}
                                         setItems={setItems}
                                     />
-                                </View>
-                                <View style={styles.action}>
-                                    <FontAwesome name="money" size={20} />
-                                    <TextInput
-                                        placeholder='Amount'
-                                        placeholderTextColor='#666666'
-                                        style={styles.textInput}
-                                    //value={userData ? userData.lname : ''}
-                                    //onChangeText={(txt) => setUserData({ ...userData, lname: txt })}
-                                    //autoCorrect={false}
-                                    />
-                                </View>
-                                <View style={styles.action}>
-                                    <FontAwesome name="gg" size={20} />
-                                    <TextInput
-                                        placeholder='Currency'
-                                        placeholderTextColor='#666666'
-                                        style={styles.textInput}
-                                    //value={userData ? userData.lname : ''}
-                                    //onChangeText={(txt) => setUserData({ ...userData, lname: txt })}
-                                    //autoCorrect={false}
-                                    />
-                                </View>
-                                <TouchableOpacity
-                                    style={styles.panelButton}
-                                    onPress={toggleBottomNavigationView}
-                                >
-                                    <Text style={styles.panelButtonTitle}>Save Expense</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.panelCancelButton}
-                                    onPress={toggleBottomNavigationView}
-                                >
-                                    <Text style={styles.panelButtonTitle}>Cancel</Text>
-                                </TouchableOpacity>
+                                </View> */}
+                            <View style={styles.action}>
+                                <FontAwesome name="money" size={20} />
+                                <TextInput
+                                    placeholder='Amount'
+                                    placeholderTextColor='#666666'
+                                    style={styles.textInput}
+                                    value={expense ? expense.expenseAmount : ''}
+                                    onChangeText={(txt) => setExpense({...expense, expenseAmount: txt})}
+                                />
                             </View>
-                        </BottomSheet>
-                        <Text style={styles.userBtnTxt}>Add an Expense Manually</Text>
-                    </TouchableOpacity>
-                </View>
+                            <View style={styles.action}>
+                                <FontAwesome name="gg" size={20} />
+                                <TextInput
+                                    placeholder='Notes'
+                                    placeholderTextColor='#666666'
+                                    style={styles.textInput}
+                                    value={expense ? expense.expenseNote : 'Daily Expense'}
+                                    onChangeText={(txt) => setExpense({...expense, expenseNote: txt})}
+                                />
+                            </View>
+                            <TouchableOpacity
+                                style={styles.panelButton}
+                                onPress={closeAddExpenseBottomSheet}
+                            >
+                                <Text style={styles.panelButtonTitle}>Save Expense</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.panelCancelButton}
+                                onPress={toggleBottomNavigationView}
+                            >
+                                <Text style={styles.panelButtonTitle}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </BottomSheet>
+                    <Text style={styles.userBtnTxt}>Add an Expense Manually</Text>
+                </TouchableOpacity>
             </View>
-        </ImageBackground>
+            <View style={styles.pageContainer}>
+                    <View style={styles.container}>
+                        <ExpenseListView
+                            itemList={expense} />
+                    </View>
+                </View>
+        </View>
     );
 }
 
 var styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FCFCFC',
     },
     backgroundImage: {
         flex: 1,
@@ -126,7 +181,7 @@ var styles = StyleSheet.create({
     },
     panel: {
         padding: 20,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FCFCFC',
         paddingTop: 20,
     },
     panelHeader: {
@@ -181,6 +236,11 @@ var styles = StyleSheet.create({
         marginTop: -12,
         paddingLeft: 10,
         color: '#05375a',
+    },
+    pageContainer: {
+        backgroundColor: '#FCFCFC',
+        flex: 1,
+        padding: 20,
     },
 });
 

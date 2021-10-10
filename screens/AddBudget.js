@@ -63,7 +63,7 @@ function AddBudget() {
                 userEmail: user.email,
                 createdAt: firestore.Timestamp.fromDate(new Date()),
             }).then(() => {
-                Alert.alert('Add Budget Details successfully.')
+                Alert.alert('Budget Saved Successfully')
             })
     };
 
@@ -129,8 +129,8 @@ function AddBudget() {
                                                     setOpen(false)
                                                     setDate(moment(date).format('YYYY-MM-DD'))
                                                     setBudgetInfo({ ...budgetInfo, budgetStartDate: txt })
-                                                    console.log(date);
-                                                    console.log('start date', budgetInfo.budgetStartDate ? budgetInfo.budgetStartDate : 'nothing')
+                                                    //console.log(date);
+                                                    //console.log('start date', budgetInfo.budgetStartDate ? budgetInfo.budgetStartDate : 'nothing')
                                                 }}
                                                 onCancel={() => {
                                                     setOpen(false)
